@@ -61,7 +61,7 @@ public class TareasController {
     }
 
     @DeleteMapping("/{tareaId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long tareaId) {
+    public ResponseEntity<Void> deleteTarea(@PathVariable Long tareaId) {
         tareasService.deleteTareaById(tareaId);
         return ResponseEntity.noContent().build();
     }

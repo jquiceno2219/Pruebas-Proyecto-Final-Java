@@ -1,0 +1,49 @@
+name: CI for testing
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    Variables-Testing:
+        name: Show testing variables.
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+            - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+            - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+    test:
+        name: Run tests.
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up JDK 19
+              uses: actions/setup-java@v3
+              with:
+                  distribution: "corretto"
+                  java-version: '19'
+                  cache: maven
+
+            - name: Build with Maven
+              run: mvn clean install
+
+            - name: Run tests
+              run: mvn test -Dspring.profiles.active=test
+
+            # Step to confirm success
+            - name: Verify Test Results - Success
+              if: success()
+              run: echo "✅ All tests passed successfully!"
+
+            # Step to confirm failure
+            - name: Verify Test Results - Failure
+              if: failure()
+              run: echo "🚨 Some tests have failed!"
