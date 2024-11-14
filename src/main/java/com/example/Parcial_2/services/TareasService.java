@@ -17,7 +17,7 @@ public class TareasService {
     public Tareas createTareas(Tareas tareas) { return tareasRepo.save(tareas); }
 
     // Obtener todas.
-    public List<Tareas> getAllTareas(Tareas tareas) { return tareasRepo.findAll();}
+    public List<Tareas> getAllTareas() { return tareasRepo.findAll();}
 
     //Obtener por ID.
     public Tareas getTareaById(Long tareaId) { return tareasRepo.findById(tareaId).orElse(null) ;}
@@ -28,7 +28,7 @@ public class TareasService {
 
         if (tareas.isPresent()) {
             Tareas tareaEditada = tareas.get();
-            tareaEditada.setTareaTitulo(tareaEditada.getTareaTitulo());
+            tareaEditada.setTareaTitulo(name);
             return tareasRepo.save(tareaEditada);
         }
         return null;
