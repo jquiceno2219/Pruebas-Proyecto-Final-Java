@@ -2,6 +2,8 @@ package com.example.Parcial_2.controller;
 
 import com.example.Parcial_2.domain.entities.Tareas;
 import com.example.Parcial_2.services.TareasService;
+import com.example.Parcial_2.services.impl.RedisService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +19,18 @@ public class TareasController {
     // actualizar titulo (PUT)
     // eliminar. (DELETE)
 
-    private final TareasService tareasService;
+    @Autowired
+    private TareasService tareasService;
 
-    public TareasController(TareasService tareasService) {
-        this.tareasService = tareasService;
+    private final RedisService redisService;
+
+    public TareasController(RedisService redisService) {
+        this.redisService = redisService;
+    }
+
+    @GetMapping("/{id}/exists")
+    public boolean exists(@PathVariable String id) {
+        return redisService.exists("tarea:" + id);
     }
 
     @PostMapping

@@ -6,22 +6,27 @@ import com.example.Parcial_2.services.TareasService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
-
+@SpringBootTest
+@AutoConfigureMockMvc
 public class TareasControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -31,12 +36,23 @@ public class TareasControllerTest {
 
     private Tareas tareas;
 
+    @Autowired
+    private DataSource dataSource;
+
     @BeforeEach
     public void setUp() {
         tareas = new Tareas(1L, "Titulo de prueba", "Soy una descripción.");
     }
 
-    // FUNCIONA.
+    // Test de base de datos
+    @Test
+    void testDatabaseConnection() throws Exception {
+        assertNotNull(dataSource, "El DataSource está configurado.");
+        try(Connection connection = dataSource.getConnection()) {
+            assertNotNull(connection, "La conexión a la base de datos es exitosa.");
+        }
+    }
+
     @Test
     public void testCreateTarea() throws Exception {
         when(tareasService.createTareas(any(Tareas.class))).thenReturn(tareas);
